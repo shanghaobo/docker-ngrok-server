@@ -11,16 +11,20 @@ if [ ! -f "build.info" ]; then
   HTTP_PORT=$2
   HTTPS_PORT=$3
   TUNNEL_PORT=$4
+  TLS_KEY=$5
+  TLS_CRT=$6
+  
+  
 
-  openssl genrsa -out rootCA.key 2048
-  openssl req -x509 -new -nodes -key rootCA.key -subj "/CN=$DOMAIN" -days 5000 -out rootCA.pem
-  openssl genrsa -out device.key 2048
-  openssl req -new -key device.key -subj "/CN=$DOMAIN" -out device.csr
-  openssl x509 -req -in device.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out device.crt -days 5000 
+#   openssl genrsa -out rootCA.key 2048
+#   openssl req -x509 -new -nodes -key rootCA.key -subj "/CN=$DOMAIN" -days 5000 -out rootCA.pem
+#   openssl genrsa -out device.key 2048
+#   openssl req -new -key device.key -subj "/CN=$DOMAIN" -out device.csr
+#   openssl x509 -req -in device.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out device.crt -days 5000 
 
-  \cp rootCA.pem assets/client/tls/ngrokroot.crt
-  \cp device.crt assets/server/tls/snakeoil.crt
-  \cp device.key assets/server/tls/snakeoil.key 
+#   \cp rootCA.pem assets/client/tls/ngrokroot.crt
+#   \cp device.crt assets/server/tls/snakeoil.crt
+#   \cp device.key assets/server/tls/snakeoil.key 
 
   make release-server
   make release-client
@@ -45,4 +49,4 @@ HTTP_PORT=$(sed -n "2p" build.info)
 HTTPS_PORT=$(sed -n "3p" build.info)
 TUNNEL_PORT=$(sed -n "4p" build.info)
 
-./bin/ngrokd -tlsKey=device.key -tlsCrt=device.crt -domain="$DOMAIN" -httpAddr=":$HTTP_PORT" -httpsAddr=":$HTTPS_PORT" -tunnelAddr=":$TUNNEL_PORT"
+./bin/ngrokd -tlsKey="$TLS_KEY" -tlsCrt="$TLS_CRT" -domain="$DOMAIN" -httpAddr=":$HTTP_PORT" -httpsAddr=":$HTTPS_PORT" -tunnelAddr=":$TUNNEL_PORT"
