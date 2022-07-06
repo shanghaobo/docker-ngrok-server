@@ -6,12 +6,12 @@ MAINTAINER jueying hhbvictory@163.com
 
 # 复制脚本文件到容器目录中
 COPY entrypoint.sh /sbin/entrypoint.sh
+COPY ngrok.tar.gz /tmp/ngrok.tar.gz
 
 # 运行指令
 RUN chmod 755 /sbin/entrypoint.sh \
   && yum install -y epel-release \
   && yum install -y golang openssl \
-  && curl -o /tmp/ngrok.tar.gz "https://gitee.com/jueyinghua/compiled-ngrok/raw/master/ngrok.tar.gz" \
   && tar -zxvf /tmp/ngrok.tar.gz -C /usr/local \
   && rm -rf /tmp/ngrok.tar.gz
 
